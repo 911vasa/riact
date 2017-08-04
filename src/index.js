@@ -11,7 +11,7 @@ const client = new FetchHttpClient('https://test.betedo.com/');
 
 class App extends Component {
 
-   queryEvent = {"phone_number": "asdasd"};
+   queryEvent = {phone_number: 123454454};
 
     constructor(props) {
         super(props);
@@ -21,6 +21,7 @@ class App extends Component {
         client.addMiddleware(request => {
             request.options.headers['Content-Type'] = 'application/json';
         });
+
         client.addMiddleware(json());
         client.post('tadiran/public/api/check-number', this.queryEvent).then(response => console.log(response.jsonData));
     }
@@ -28,13 +29,14 @@ class App extends Component {
 
 
     videoSearch(term){
-        YTSearch({key: API_KEY, term: term},  (videos) => {
+        YTSearch({maxResults: 15 ,key: API_KEY, term: term  },  (videos) => {
+            console.log(videos ,'asdd')
             this.setState({
                 videos,
                 selectedVideo: videos[0]
             });
         });
-        console.log(term);
+
     }
 
     render() {
