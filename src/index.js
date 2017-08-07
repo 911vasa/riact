@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import _ from 'lodash';
 import ReactDOM from 'react-dom';
 import SearchBar from './component/search_bar';
 import VideoList from './component/video_list';
@@ -24,12 +25,14 @@ class App extends Component {
 
         client.addMiddleware(json());
         client.post('tadiran/public/api/check-number', this.queryEvent).then(response => console.log(response.jsonData));
+
     }
 
 
 
     videoSearch(term){
-        YTSearch({maxResults: 15 ,key: API_KEY, term: term  },  (videos) => {
+
+        YTSearch({ key: API_KEY, term: term  },  (videos) => {
             console.log(videos ,'asdd')
             this.setState({
                 videos,
@@ -40,9 +43,12 @@ class App extends Component {
     }
 
     render() {
+
+        const videoSearch = _.debounce((term) => {this.videoSearch(term)} , 300);
+
         return (
             <div>
-                <SearchBar onSearchTermChange={term => this.videoSearch(term)} />
+                <SearchBar onSearchTermChange={videoSearch} />
                 <VideoDetail video={this.state.selectedVideo}/>
                 <VideoList
                     onVideoSelect={selectedVideo => this.setState({selectedVideo})}
@@ -51,5 +57,4 @@ class App extends Component {
         );
     }
 }
-
 ReactDOM.render(<App/>, document.querySelector('.container'));
